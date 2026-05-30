@@ -1,0 +1,17 @@
+{
+    "name": "Queue Buttons",
+    "description": "Add buttons to move and remove tracks in the queue panel.",
+    "preview": "assets/preview.png",
+    "main": "queueButtons.js",
+    "readme": "README.md",
+    "authors": [
+        {
+            "name": "Grinnfi",
+            "url": "https://github.com/Grinnfi"
+        }
+    ],
+    "tags": [
+        "queue",
+        "utility"
+    ]
+}
