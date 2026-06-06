@@ -3,7 +3,7 @@
 // DESCRIPTION: Add buttons to move and remove tracks in the queue panel.
 
 (function queueButtons() {
-    const DEBUG = true; // Set to true to see full, verbose step-by-step logging
+    const DEBUG = false; // Set to true to see full, verbose step-by-step logging
     const log = (() => {
         const getPrefix = () => `[${new Date().toISOString().slice(11, 23)}] [Queue Buttons]`;
 
@@ -170,9 +170,30 @@
         });
     }
 
-    window.addEventListener("keydown", updateModifierState);
-    window.addEventListener("keyup", updateModifierState);
-    window.addEventListener("blur", () => {
+    async function removeSelectedTracksFromQueue() {
+        const selectedTracksUids = Array.from(document.querySelectorAll('[class*="-box--tinted"]'))
+            .map(el => el.closest('[data-flip-id]')?.getAttribute('data-flip-id')).filter(Boolean);
+        // log("Selected tracks UIDs", selectedTracksUids);
+
+        const tracks = selectedTracksUids.map(uid => ({
+            uri: queueData.get(uid),
+            uid
+        }));
+        log("Removing from queue", tracks);
+        await Spicetify.Platform.PlayerAPI.removeFromQueue(tracks);
+    }
+
+    function keyUpdate(e) {
+        updateModifierState(e);
+        if (e.key === "Delete" && e.type === "keyup") {
+            removeSelectedTracksFromQueue();
+        }
+    }
+
+
+    window.addEventListener("keydown", keyUpdate);
+    window.addEventListener("keyup", keyUpdate);
+    window.addEventListener("blur", () => { // resets when window is out of focus
         if (currentModifier !== "normal") {
             currentModifier = "normal";
             updateButtonsUI();
@@ -266,7 +287,7 @@
                         await Spicetify.Platform.PlayerAPI.removeFromQueue([{ uri, uid }]);
                         await Spicetify.Platform.PlayerAPI.addToQueue([{ uri }]);
                     }
-                    Spicetify.showNotification("Shuffled in Queue");
+                    Spicetify.showNotification("Shuffled in queue");
 
                 } else {
                     // --- Move to last in queue (Bottom of manual queue) ---

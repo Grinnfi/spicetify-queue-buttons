@@ -36,6 +36,8 @@ Add buttons to move and remove tracks in the queue panel.
 </svg>
 Removes only the selected track.
 
+<code>Delete</code> Removes all selected tracks in queue.
+
 ### Installation
 
 1. Install [Spicetify](https://spicetify.app) and set it up according to the instructions.
